@@ -1039,40 +1039,7 @@
   .cart-badge.visible { display: flex; }
 
   /* CATEGORY PILLS */
-  .cat-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .cat-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.4rem 1rem;
-    border-radius: 100px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: transparent;
-    color: var(--muted);
-    font-size: 0.75rem;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 400;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: all 0.18s;
-    white-space: nowrap;
-  }
-  .cat-pill:hover { border-color: var(--red); color: var(--red); }
-  .cat-pill.active {
-    background: var(--red);
-    border-color: var(--red);
-    color: var(--white);
-    font-weight: 500;
-  }
-  .cat-pill-count {
-    font-size: 0.65rem;
-    opacity: 0.7;
-  }
+
 
   /* MOBILE: float cart button */
   .cart-float {
@@ -1248,6 +1215,9 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" id="search" placeholder="Buscar producto...">
       </div>
+      <select class="filter-select" id="cat-select" onchange="setActiveCat(this.value)">
+        <option value="">Todas las categorías</option>
+      </select>
       <select class="filter-select" id="cat-filter">
         <option value="">Todas las marcas</option>
       </select>
@@ -1260,9 +1230,6 @@
       </select>
     </div>
   </div>
-
-  <!-- CATEGORY PILLS -->
-  <div class="cat-pills" id="cat-pills"></div>
 
   <div id="product-grid">
     <div class="loading-state">
@@ -1787,34 +1754,18 @@ function buildCategoryPills() {
   var cats = Object.keys(catCount).sort();
   if (!cats.length) return;
 
-  var container = document.getElementById('cat-pills');
-  container.innerHTML = '';
-
-  // "Todos" pill
-  var allPill = document.createElement('button');
-  allPill.className = 'cat-pill active';
-  allPill.innerHTML = 'Todos <span class="cat-pill-count">(' + allProducts.length + ')</span>';
-  allPill.onclick = function() { setActiveCat(''); };
-  container.appendChild(allPill);
-
+  var sel = document.getElementById('cat-select');
+  sel.innerHTML = '<option value="">Todas las categorías</option>';
   cats.forEach(function(c) {
-    var pill = document.createElement('button');
-    pill.className = 'cat-pill';
-    pill.dataset.cat = c;
-    pill.innerHTML = c + ' <span class="cat-pill-count">(' + catCount[c] + ')</span>';
-    pill.onclick = function() { setActiveCat(c); };
-    container.appendChild(pill);
+    var o = document.createElement('option');
+    o.value = c;
+    o.textContent = c + ' (' + catCount[c] + ')';
+    sel.appendChild(o);
   });
 }
 
 function setActiveCat(cat) {
   activeCat = cat;
-  // Update pill styles
-  document.querySelectorAll('.cat-pill').forEach(function(p) {
-    var isTodos = !p.dataset.cat;
-    var isThis = p.dataset.cat === cat;
-    p.classList.toggle('active', cat === '' ? isTodos : isThis);
-  });
   applyFilters();
 }
 
