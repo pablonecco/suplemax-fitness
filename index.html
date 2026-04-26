@@ -363,7 +363,7 @@
   /* PRODUCT GRID */
   #product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(5, 1fr);
     gap: 20px;
   }
 
@@ -1349,7 +1349,7 @@ const API_URL = 'https://api.sheetbest.com/sheets/5fe69c5d-1965-40d4-b3a6-0a36e1
 let allProducts = [];
 let cart = {};
 let currentPage = 1;
-const PAGE_SIZE = 24;
+const PAGE_SIZE = 25;
 let lastFiltered = []; // key: productId, value: {item, qty}
 
 function toNum(val) {
