@@ -384,6 +384,7 @@
     flex-direction: column;
     gap: 0;
     cursor: pointer;
+    isolation: isolate;
   }
   .product-card:hover { background: var(--gray2); border-color: rgba(232,32,10,0.45); }
 
@@ -1143,6 +1144,176 @@
   }
 
 
+
+  /* PRODUCT MODAL */
+  .product-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+  }
+  .product-modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .product-modal {
+    background: #111;
+    border: 1px solid rgba(232,32,10,0.3);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 780px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    z-index: 10001;
+    transform: translateY(20px);
+    transition: transform 0.25s;
+  }
+  .product-modal-overlay.open .product-modal {
+    transform: translateY(0);
+  }
+  .product-modal-img {
+    width: 280px;
+    min-width: 280px;
+    height: auto;
+    min-height: 320px;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    border-radius: 6px 0 0 6px;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .product-modal-img img {
+    width: 100%;
+    height: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    display: block;
+  }
+  .product-modal-body {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+  }
+  .product-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255,255,255,0.07);
+    border: none;
+    color: var(--muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+    z-index: 10;
+  }
+  .product-modal-close:hover { background: rgba(255,255,255,0.14); color: var(--white); }
+  .product-modal-marca {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .product-modal-nombre {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--white);
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+  }
+  .product-modal-sabores {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .product-modal-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+    margin: 0.25rem 0;
+  }
+  .product-modal-precio-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 600;
+  }
+  .product-modal-precio {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+  .product-modal-lista {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .product-modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    flex-wrap: wrap;
+  }
+  .product-modal-actions .btn-primary {
+    flex: 1;
+    justify-content: center;
+  }
+  @media (max-width: 600px) {
+    .product-modal-overlay {
+      padding: 0;
+      align-items: flex-end;
+    }
+    .product-modal {
+      flex-direction: column;
+      max-height: 92vh;
+      border-radius: 12px 12px 0 0;
+      width: 100%;
+    }
+    .product-modal-img {
+      width: 100%;
+      min-width: unset;
+      min-height: unset;
+      height: 200px;
+      border-radius: 12px 12px 0 0;
+      padding: 1.25rem;
+    }
+    .product-modal-body {
+      padding: 1.25rem;
+    }
+    .product-modal-nombre {
+      font-size: 1.6rem;
+    }
+    .product-modal-precio {
+      font-size: 2rem;
+    }
+  }
 </style>
 </head>
 <body>
@@ -1671,6 +1842,15 @@ function renderProducts(products) {
     footer.appendChild(btnsCol);
     body.appendChild(footer);
     card.appendChild(body);
+
+    // Open modal only when clicking non-interactive areas of the card
+    (function(prod) {
+      card.addEventListener('click', function(e) {
+        if (e.target.closest('button, a')) return;
+        openProductModal(prod);
+      });
+    })(item);
+
     grid.appendChild(card);
   }
 
@@ -1818,6 +1998,152 @@ function loadProducts() {
     .catch(function(e) { showError(e.message); });
 }
 
+
+// ---- PRODUCT MODAL ----
+var _modalItem = null; // currently open product
+
+function modalQtyChange(delta) {
+  if (!_modalItem) return;
+  var productId = getProductId(_modalItem);
+  if (!cart[productId]) cart[productId] = { item: _modalItem, qty: 0 };
+  cart[productId].qty += delta;
+  if (cart[productId].qty <= 0) delete cart[productId];
+  updateCartUI();
+  renderModalCartBtn(productId);
+  renderPage();
+}
+
+function renderModalCartBtn(productId) {
+  var actionsEl = document.getElementById('modal-actions');
+  if (!actionsEl) return;
+  var qty = cart[productId] ? cart[productId].qty : 0;
+  // Remove existing cart control (first child)
+  var existing = document.getElementById('modal-qty-row');
+  if (existing) existing.parentNode.removeChild(existing);
+
+  var container = document.createElement('div');
+  container.id = 'modal-qty-row';
+
+  if (qty > 0) {
+    container.className = 'card-qty-row';
+    container.style.borderColor = 'rgba(245,197,24,0.5)';
+
+    var btnMinus = document.createElement('button');
+    btnMinus.className = 'card-qty-btn';
+    btnMinus.textContent = '−';
+    btnMinus.onclick = function() { modalQtyChange(-1); };
+
+    var numSpan = document.createElement('span');
+    numSpan.className = 'card-qty-num';
+    numSpan.textContent = qty;
+
+    var btnPlus = document.createElement('button');
+    btnPlus.className = 'card-qty-btn';
+    btnPlus.textContent = '+';
+    btnPlus.onclick = function() { modalQtyChange(1); };
+
+    container.appendChild(btnMinus);
+    container.appendChild(numSpan);
+    container.appendChild(btnPlus);
+  } else {
+    container.className = 'btn-cart';
+    container.style.cssText = 'padding:.7rem 1.5rem;font-size:.85rem;cursor:pointer';
+    container.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Al carrito';
+    container.onclick = function() { modalQtyChange(1); };
+  }
+
+  actionsEl.insertBefore(container, actionsEl.firstChild);
+}
+
+function openProductModal(item) {
+  var marca = (item['MARCA'] || '').trim();
+  var nombre = (item['PRODUCTO'] || '').trim();
+  var efectivo = (item['EFECTIVO'] || '').trim();
+  var precioLista = (item['PRECIO LISTA'] || '').trim();
+  var imagen = (item['IMAGEN'] || '').trim();
+  var sabores = getSabores(item);
+  var waLink = makeWALink(item);
+
+  // Image — clear first to avoid stacking on re-open
+  var imgWrap = document.getElementById('modal-img-wrap');
+  imgWrap.innerHTML = '';
+  if (imagen) {
+    var modalImg = document.createElement('img');
+    modalImg.src = imagen;
+    modalImg.alt = nombre;
+    modalImg.style.width = '100%';
+    modalImg.style.maxHeight = '300px';
+    modalImg.style.objectFit = 'contain';
+    modalImg.style.display = 'block';
+    modalImg.onerror = function() { imgWrap.innerHTML = '<div style="opacity:.2;color:#333;font-size:.7rem;text-align:center">Sin imagen</div>'; };
+    imgWrap.appendChild(modalImg);
+  } else {
+    imgWrap.innerHTML = '<div style="opacity:.15;color:#333;font-size:.7rem;text-align:center">Sin imagen</div>';
+  }
+
+  document.getElementById('modal-marca').textContent = marca;
+  document.getElementById('modal-nombre').textContent = nombre;
+
+  var sabEl = document.getElementById('modal-sabores');
+  sabEl.textContent = sabores.length ? 'Sabores disponibles: ' + sabores.join(' · ') : '';
+
+  // Precio
+  var labelEl = document.getElementById('modal-precio-label');
+  var precioEl = document.getElementById('modal-precio');
+  var listaEl = document.getElementById('modal-lista');
+
+  if (efectivo) {
+    labelEl.textContent = '💵 Precio efectivo / transferencia';
+    precioEl.textContent = efectivo;
+  } else if (precioLista) {
+    labelEl.textContent = 'Precio lista';
+    precioEl.textContent = precioLista;
+  } else {
+    labelEl.textContent = '';
+    precioEl.textContent = 'Consultar precio';
+  }
+
+  if (precioLista && precioLista !== efectivo && efectivo) {
+    listaEl.textContent = 'Precio lista: ' + precioLista;
+  } else {
+    listaEl.textContent = '';
+  }
+
+  // Actions — build with DOM, no innerHTML string quoting issues
+  _modalItem = item;
+  var pid = getProductId(item);
+  var actionsEl = document.getElementById('modal-actions');
+  actionsEl.innerHTML = '';
+
+  var waBtn = document.createElement('a');
+  waBtn.href = waLink;
+  waBtn.target = '_blank';
+  waBtn.className = 'btn-primary';
+  waBtn.style.cssText = 'text-decoration:none;flex:1;justify-content:center';
+  waBtn.innerHTML = WA_SVG + ' Consultar por WhatsApp';
+  actionsEl.appendChild(waBtn);
+
+  renderModalCartBtn(pid);
+
+  document.getElementById('product-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProductModalDirect() {
+  document.getElementById('product-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeProductModal(e) {
+  if (e.target === document.getElementById('product-modal-overlay')) {
+    closeProductModalDirect();
+  }
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeProductModalDirect();
+});
+
 loadProducts();
 </script>
 
@@ -1960,5 +2286,25 @@ loadProducts();
   loop();
 })();
 </script>
+
+<!-- PRODUCT MODAL -->
+<div class="product-modal-overlay" id="product-modal-overlay" onclick="closeProductModal(event)">
+  <div class="product-modal" id="product-modal">
+    <button class="product-modal-close" onclick="closeProductModalDirect()">&times;</button>
+    <div class="product-modal-img" id="modal-img-wrap"></div>
+    <div class="product-modal-body">
+      <div class="product-modal-marca" id="modal-marca"></div>
+      <div class="product-modal-nombre" id="modal-nombre"></div>
+      <div class="product-modal-sabores" id="modal-sabores"></div>
+      <div class="product-modal-divider"></div>
+      <div>
+        <div class="product-modal-precio-label" id="modal-precio-label"></div>
+        <div class="product-modal-precio" id="modal-precio"></div>
+        <div class="product-modal-lista" id="modal-lista"></div>
+      </div>
+      <div class="product-modal-actions" id="modal-actions"></div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
