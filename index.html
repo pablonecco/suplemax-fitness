@@ -111,7 +111,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 7rem 2.5rem 3rem;
+    padding: 7rem 2.5rem 5rem;
     position: relative;
     overflow: hidden;
   }
@@ -234,15 +234,16 @@
   /* FEATURES STRIP */
   .features-strip {
     display: flex;
-    border-top: 1px solid rgba(255,255,255,0.08);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(to bottom, transparent 0%, rgba(10,10,10,0.5) 100%);
     overflow: hidden;
+    margin-top: -40px;
+    position: relative;
+    z-index: 3;
   }
 
   .feature-item {
     flex: 1;
     padding: 1.5rem 2rem;
-    border-right: 1px solid rgba(255,255,255,0.08);
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -292,7 +293,9 @@
   }
 
   /* CATALOG */
-  #catalogo { background: var(--gray); }
+  #catalogo {
+    background: linear-gradient(to bottom, var(--black) 0%, var(--gray) 120px);
+  }
 
   .catalog-header {
     display: flex;
@@ -1350,7 +1353,7 @@ const API_URL = 'https://api.sheetbest.com/sheets/5fe69c5d-1965-40d4-b3a6-0a36e1
 let allProducts = [];
 let cart = {};
 let currentPage = 1;
-const PAGE_SIZE = 24;
+const PAGE_SIZE = 25;
 let lastFiltered = []; // key: productId, value: {item, qty}
 
 function toNum(val) {
