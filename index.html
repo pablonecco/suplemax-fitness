@@ -1159,6 +1159,7 @@
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-lines"></div>
+  <canvas id="hero-canvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;"></canvas>
   <span class="hero-tag">&#9679; Suplementos Deportivos Premium</span>
   <h1>LLEVÁ TU<br><em>RENDIMIENTO</em><br>AL LÍMITE</h1>
   <p class="hero-sub">Proteínas, creatinas, pre-entrenos y más. Productos de calidad al mejor precio, con asesoramiento personalizado.</p>
@@ -1349,7 +1350,7 @@ const API_URL = 'https://api.sheetbest.com/sheets/5fe69c5d-1965-40d4-b3a6-0a36e1
 let allProducts = [];
 let cart = {};
 let currentPage = 1;
-const PAGE_SIZE = 25;
+const PAGE_SIZE = 24;
 let lastFiltered = []; // key: productId, value: {item, qty}
 
 function toNum(val) {
@@ -1811,6 +1812,146 @@ function loadProducts() {
 }
 
 loadProducts();
+</script>
+
+<script>
+// HERO PARTICLE CANVAS
+(function() {
+  var canvas = document.getElementById('hero-canvas');
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  var mouse = { x: null, y: null };
+  var NUM = 72;
+  var CONNECT_DIST = 130;
+  var RAF;
+
+  function resize() {
+    var hero = canvas.parentElement;
+    canvas.width = hero.offsetWidth;
+    canvas.height = hero.offsetHeight;
+  }
+
+  function randBetween(a, b) { return a + Math.random() * (b - a); }
+
+  var COLORS = [
+    'rgba(232,32,10,',    // red
+    'rgba(245,197,24,',   // yellow
+    'rgba(200,20,0,',     // deep red
+    'rgba(255,80,40,',    // orange-red
+  ];
+
+  function Particle() {
+    this.reset(true);
+  }
+
+  Particle.prototype.reset = function(init) {
+    this.x = randBetween(0, canvas.width);
+    this.y = init ? randBetween(0, canvas.height) : randBetween(0, canvas.height);
+    this.r = randBetween(1.2, 3.5);
+    this.vx = randBetween(-0.35, 0.35);
+    this.vy = randBetween(-0.5, -0.1);
+    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    this.alpha = randBetween(0.3, 0.85);
+    this.pulse = randBetween(0, Math.PI * 2);
+    this.pulseSpeed = randBetween(0.008, 0.025);
+  };
+
+  Particle.prototype.update = function() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.pulse += this.pulseSpeed;
+    // wrap around
+    if (this.x < -10) this.x = canvas.width + 10;
+    if (this.x > canvas.width + 10) this.x = -10;
+    if (this.y < -10) { this.y = canvas.height + 10; this.x = randBetween(0, canvas.width); }
+  };
+
+  Particle.prototype.draw = function() {
+    var pulsedAlpha = this.alpha * (0.7 + 0.3 * Math.sin(this.pulse));
+    var pulsedR = this.r * (0.9 + 0.15 * Math.sin(this.pulse));
+    // glow
+    var grd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, pulsedR * 3.5);
+    grd.addColorStop(0, this.color + pulsedAlpha + ')');
+    grd.addColorStop(0.5, this.color + (pulsedAlpha * 0.35) + ')');
+    grd.addColorStop(1, this.color + '0)');
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, pulsedR * 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = grd;
+    ctx.fill();
+    // core dot
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, pulsedR, 0, Math.PI * 2);
+    ctx.fillStyle = this.color + pulsedAlpha + ')';
+    ctx.fill();
+  };
+
+  function init() {
+    resize();
+    particles = [];
+    for (var i = 0; i < NUM; i++) particles.push(new Particle());
+  }
+
+  function drawLines() {
+    for (var i = 0; i < particles.length; i++) {
+      for (var j = i + 1; j < particles.length; j++) {
+        var dx = particles[i].x - particles[j].x;
+        var dy = particles[i].y - particles[j].y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < CONNECT_DIST) {
+          var alpha = (1 - dist / CONNECT_DIST) * 0.18;
+          // blend between the two particle colors
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = 'rgba(232,32,10,' + alpha + ')';
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+      // connect to mouse
+      if (mouse.x !== null) {
+        var mx = particles[i].x - mouse.x;
+        var my = particles[i].y - mouse.y;
+        var md = Math.sqrt(mx * mx + my * my);
+        if (md < 180) {
+          var ma = (1 - md / 180) * 0.35;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = 'rgba(245,197,24,' + ma + ')';
+          ctx.lineWidth = 0.9;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawLines();
+    for (var i = 0; i < particles.length; i++) {
+      particles[i].update();
+      particles[i].draw();
+    }
+    RAF = requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', function() { resize(); });
+
+  canvas.parentElement.addEventListener('mousemove', function(e) {
+    var rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+
+  canvas.parentElement.addEventListener('mouseleave', function() {
+    mouse.x = null;
+    mouse.y = null;
+  });
+
+  init();
+  loop();
+})();
 </script>
 </body>
 </html>
