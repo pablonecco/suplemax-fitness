@@ -1561,7 +1561,7 @@ function getProductId(item) {
 function makeWALink(item) {
   var nombre = (item['PRODUCTO'] || '').trim();
   var marca = (item['MARCA'] || '').trim();
-  var precio = (item['EFECTIVO'] || item['PRECIO LISTA'] || '').trim();
+  var precio = (item['PRECIO LISTA'] || item['EFECTIVO'] || '').trim();
   var sabores = getSabores(item);
   var sabStr = sabores.length ? ' - Sabor: ' + sabores.join(' / ') : '';
   var msg = 'Hola! Quiero consultar por *' + marca + ' ' + nombre + '*' + (precio ? ' (' + precio + ')' : '') + sabStr + '. Esta disponible?';
@@ -1615,7 +1615,7 @@ function updateCartUI() {
   var keys = Object.keys(cart);
   var totalItems = keys.reduce(function(s, k) { return s + cart[k].qty; }, 0);
   var totalPrice = keys.reduce(function(s, k) {
-    return s + toNum(cart[k].item['EFECTIVO'] || cart[k].item['PRECIO LISTA'] || 0) * cart[k].qty;
+    return s + toNum(cart[k].item['PRECIO LISTA'] || cart[k].item['EFECTIVO'] || 0) * cart[k].qty;
   }, 0);
 
   // Badges
@@ -1654,7 +1654,7 @@ function updateCartUI() {
     var entry = cart[k];
     var marca = (entry.item['MARCA'] || '').trim();
     var nombre = (entry.item['PRODUCTO'] || '').trim();
-    var precio = (entry.item['EFECTIVO'] || entry.item['PRECIO LISTA'] || '').trim();
+    var precio = (entry.item['PRECIO LISTA'] || entry.item['EFECTIVO'] || '').trim();
     var esc = k.replace(/'/g, "\\'");
     html += '<div class="cart-item">';
     html += '<div class="cart-item-info">';
@@ -1698,7 +1698,7 @@ function sendCartToWA() {
     var entry = cart[k];
     var marca = (entry.item['MARCA'] || '').trim();
     var nombre = (entry.item['PRODUCTO'] || '').trim();
-    var precio = (entry.item['EFECTIVO'] || entry.item['PRECIO LISTA'] || '').trim();
+    var precio = (entry.item['PRECIO LISTA'] || entry.item['EFECTIVO'] || '').trim();
     var sabores = getSabores(entry.item);
     var sabStr = sabores.length ? ' (' + sabores[0] + ')' : '';
     var line = '• *' + marca + ' ' + nombre + '*' + sabStr;
