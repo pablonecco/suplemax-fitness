@@ -1798,7 +1798,7 @@ function renderProducts(products) {
     if (precioLista && precioLista !== efectivo && efectivo) {
       var listaEl = document.createElement('div');
       listaEl.className = 'price-lista-row';
-      listaEl.innerHTML = '<span class="lista-label">Precio lista: </span><span class="lista-val">' + precioLista + '</span>';
+      listaEl.innerHTML = '<span class="lista-label">Precio transferencia: </span><span class="lista-val">' + precioLista + '</span>';
       priceCol.appendChild(listaEl);
     }
     footer.appendChild(priceCol);
@@ -2104,7 +2104,7 @@ function openProductModal(item) {
   }
 
   if (precioLista && precioLista !== efectivo && efectivo) {
-    listaEl.textContent = 'Precio lista: ' + precioLista;
+    listaEl.textContent = 'Precio transferencia: ' + precioLista;
   } else {
     listaEl.textContent = '';
   }
