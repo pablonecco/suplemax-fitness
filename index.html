@@ -1888,9 +1888,15 @@ function makeWALink(item) {
 // ---- CART FUNCTIONS ----
 // Track which card index corresponds to each pid (rebuilt each render)
 var cardIndexMap = {};
+var ofertaProducts = []; // productos de ofertas semanales
+
+function findProduct(productId) {
+  return allProducts.find(function(p) { return getProductId(p) === productId; })
+      || ofertaProducts.find(function(p) { return getProductId(p) === productId; });
+}
 
 function cardQtyChange(productId, delta, cardIdx) {
-  var item = allProducts.find(function(p) { return getProductId(p) === productId; });
+  var item = findProduct(productId);
   if (!item) return;
   if (!cart[productId]) {
     cart[productId] = { item: item, qty: 0 };
@@ -1902,7 +1908,7 @@ function cardQtyChange(productId, delta, cardIdx) {
     var row = document.getElementById('qrow-' + cardIdx);
     if (row) {
       var pidEsc = productId.replace(/'/g, "\\'");
-      row.outerHTML = '<button class="btn-cart" id="qrow-' + cardIdx + '" onclick="cardQtyChange(\'' + pidEsc + '\',1,' + cardIdx + ');event.stopPropagation()">'
+      row.outerHTML = '<button class="btn-cart" id="qrow-' + cardIdx + '" onclick="cardQtyChange(\'' + pidEsc + '\',1,\'' + cardIdx + '\');event.stopPropagation()">'
         + '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Al carrito</button>';
     }
   } else {
@@ -1912,9 +1918,9 @@ function cardQtyChange(productId, delta, cardIdx) {
     if (row && row.classList.contains('btn-cart')) {
       // Swap button → counter
       row.outerHTML = '<div class="card-qty-row" id="qrow-' + cardIdx + '">'
-        + '<button class="card-qty-btn" onclick="cardQtyChange(\'' + pidEsc + '\',-1,' + cardIdx + ');event.stopPropagation()">−</button>'
+        + '<button class="card-qty-btn" onclick="cardQtyChange(\'' + pidEsc + '\',-1,\'' + cardIdx + '\');event.stopPropagation()">−</button>'
         + '<span class="card-qty-num" id="qnum-' + cardIdx + '">' + qty + '</span>'
-        + '<button class="card-qty-btn" onclick="cardQtyChange(\'' + pidEsc + '\',1,' + cardIdx + ');event.stopPropagation()">+</button>'
+        + '<button class="card-qty-btn" onclick="cardQtyChange(\'' + pidEsc + '\',1,\'' + cardIdx + '\');event.stopPropagation()">+</button>'
         + '</div>';
     } else {
       var qnum = document.getElementById('qnum-' + cardIdx);
@@ -1926,6 +1932,21 @@ function cardQtyChange(productId, delta, cardIdx) {
   var badge = document.getElementById('cart-badge');
   badge.style.transform = 'scale(1.5)';
   setTimeout(function() { badge.style.transform = ''; }, 200);
+}
+
+function addToCart(productId) {
+  var item = findProduct(productId);
+  if (!item) return;
+  if (!cart[productId]) cart[productId] = { item: item, qty: 0 };
+  cart[productId].qty += 1;
+  updateCartUI();
+}
+
+function removeFromCart(productId) {
+  if (!cart[productId]) return;
+  cart[productId].qty -= 1;
+  if (cart[productId].qty <= 0) delete cart[productId];
+  updateCartUI();
 }
 
 function updateCartUI() {
@@ -1995,8 +2016,9 @@ function updateCartUI() {
 function clearCart() {
   cart = {};
   updateCartUI();
-  // Re-render to reset all card qty buttons
+  // Re-render para resetear botones en catálogo y ofertas
   applyFilters();
+  renderOfertas(ofertaProducts);
 }
 
 function toggleCart() {
@@ -2282,6 +2304,7 @@ function showError(msg) {
 }
 
 function renderOfertas(ofertas) {
+  ofertaProducts = ofertas; // guardar referencia para el carrito
   var grid = document.getElementById('ofertas-grid');
   var section = document.getElementById('ofertas');
   if (!ofertas.length) {
