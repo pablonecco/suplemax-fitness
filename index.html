@@ -592,12 +592,11 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2.5rem;
     flex-wrap: wrap;
     gap: 1.5rem;
   }
 
-  /* Barra de búsqueda + sort compactos */
   .catalog-controls {
     display: flex;
     gap: 0.75rem;
@@ -619,9 +618,9 @@
     font-size: 0.82rem;
     outline: none;
     width: 220px;
-    transition: border-color 0.2s, background 0.2s;
+    transition: border-color 0.2s;
   }
-  .search-box input:focus { border-color: var(--accent); background: rgba(255,255,255,0.08); }
+  .search-box input:focus { border-color: var(--accent); }
   .search-box input::placeholder { color: var(--muted); }
 
   .search-box svg {
@@ -650,129 +649,99 @@
     background-position: right 0.75rem center;
   }
   .filter-select:focus, .sort-select:focus { border-color: var(--accent); }
-  .filter-select option, .sort-select option { background: #2a2a2a; color: #f5f3ee; }
-
-  /* CATEGORY PILLS — scroll horizontal */
-  .cat-pills-wrap {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: 2px;
-    margin-bottom: 1.75rem;
-    -webkit-overflow-scrolling: touch;
-    /* fade edges */
-    mask-image: linear-gradient(to right, transparent 0, black 20px, black calc(100% - 20px), transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0, black 20px, black calc(100% - 20px), transparent 100%);
-  }
-  .cat-pills-wrap::-webkit-scrollbar { display: none; }
-
-  .cat-pill {
-    flex-shrink: 0;
-    padding: 0.4rem 1rem;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: transparent;
-    color: var(--muted);
-    font-size: 0.75rem;
-    font-family: 'DM Sans', sans-serif;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    transition: background 0.18s, border-color 0.18s, color 0.18s;
-    white-space: nowrap;
-  }
-  .cat-pill:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
-  .cat-pill.active {
-    background: var(--red);
-    border-color: var(--red);
-    color: var(--white);
-    font-weight: 500;
-  }
-  .cat-pill .pill-count {
-    display: inline-block;
-    margin-left: 5px;
-    font-size: 0.65rem;
-    opacity: 0.65;
+  .filter-select option, .sort-select option {
+    background: #2a2a2a;
+    color: #f5f3ee;
   }
 
   /* PRODUCT GRID */
   #product-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 20px;
   }
 
   .product-card {
     background: var(--gray);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 8px;
+    border: 1px solid rgba(232,32,10,0.35);
+    border-radius: 4px;
     overflow: hidden;
-    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    transition: background 0.2s, border-color 0.2s;
     display: flex;
     flex-direction: column;
+    gap: 0;
     cursor: pointer;
     isolation: isolate;
   }
-  .product-card:hover {
-    border-color: rgba(232,32,10,0.5);
-    box-shadow: 0 6px 24px rgba(0,0,0,0.35);
-    transform: translateY(-2px);
-  }
+  .product-card:hover { background: var(--gray2); border-color: rgba(232,32,10,0.45); }
 
   .product-img-wrap {
     width: 100%;
-    height: 200px;
-    background: #f5f5f5;
+    height: 160px;
+    background: #f8f8f8;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     position: relative;
-    padding: 16px;
-    border-radius: 8px 8px 0 0;
-    margin: 0;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 10px 10px 0 10px;
+    width: calc(100% - 20px);
+  }
+  .product-img-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(245,197,24,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
   }
   .product-img-wrap img {
     width: 100%;
     height: 100%;
     object-fit: contain;
     display: block;
-    transition: transform 0.35s cubic-bezier(.22,.68,0,1.2);
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 0;
+    border-radius: 2px;
   }
-  .product-card:hover .product-img-wrap img { transform: scale(1.07); }
+  .product-card:hover .product-img-wrap img {
+    transform: scale(1.05);
+  }
 
   .product-img-placeholder {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.6rem;
-    opacity: 0.15;
-    color: #333;
+    opacity: 0.12;
   }
   .product-img-placeholder svg { width: 44px; height: 44px; }
   .product-img-placeholder span { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; }
 
   .product-card-body {
-    padding: 0.9rem 1rem 1rem;
+    padding: 0.85rem 1rem 0.85rem;
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.35rem;
     flex: 1;
   }
 
   .product-cat {
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--red);
-    font-weight: 500;
+    color: var(--accent);
+    font-weight: 400;
   }
 
   .product-name {
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 500;
     color: var(--white);
-    line-height: 1.35;
+    line-height: 1.3;
   }
 
   .product-desc {
@@ -785,42 +754,14 @@
   .product-footer {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    margin-top: 0.75rem;
+    align-items: center;
+    margin-top: 0.4rem;
     padding-top: 0.65rem;
-    border-top: 1px solid rgba(255,255,255,0.06);
+    border-top: 1px solid rgba(255,255,255,0.07);
   }
 
-  .product-lista {
-    font-size: 0.7rem;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-  .product-price {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.5rem;
-    color: var(--accent);
-    letter-spacing: 0.02em;
-    line-height: 1;
-  }
-  .price-efectivo-label {
-    font-size: 0.56rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--red);
-    font-weight: 600;
-    display: block;
-    margin-bottom: 2px;
-  }
-  .price-lista-row {
-    font-size: 0.68rem;
-    color: var(--muted);
-    margin-top: 3px;
-  }
-  .price-lista-row .lista-label { color: var(--muted); }
-  .price-lista-row .lista-val { color: #bbb; font-weight: 400; }
+  /* product-price defined below with efectivo emphasis */
 
-  /* Botón "al carrito" y qty row */
   .btn-buy {
     display: inline-flex;
     align-items: center;
@@ -832,7 +773,7 @@
     font-weight: 500;
     letter-spacing: 0.08em;
     padding: 0.5rem 1rem;
-    border-radius: 4px;
+    border-radius: 2px;
     transition: background 0.2s, transform 0.15s;
     white-space: nowrap;
   }
@@ -843,7 +784,7 @@
     align-items: center;
     gap: 0;
     border: 1px solid rgba(245,197,24,0.5);
-    border-radius: 4px;
+    border-radius: 2px;
     overflow: hidden;
   }
   .card-qty-btn {
@@ -871,89 +812,7 @@
     line-height: 1;
   }
 
-  .btn-cart {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.35rem;
-    background: transparent;
-    border: 1px solid rgba(245,197,24,0.4);
-    color: var(--accent);
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    padding: 0.45rem 0.8rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.18s, border-color 0.18s, transform 0.15s;
-    white-space: nowrap;
-    font-family: 'DM Sans', sans-serif;
-    position: relative;
-    overflow: hidden;
-  }
-  .btn-cart:hover { background: rgba(245,197,24,0.1); border-color: var(--accent); transform: translateY(-1px); }
-  .btn-cart.added {
-    background: rgba(245,197,24,0.18);
-    border-color: var(--accent);
-    pointer-events: none;
-  }
-
-  .product-footer-btns {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    align-items: flex-end;
-  }
-
-  /* Estado vacío mejorado */
-  .empty-state {
-    grid-column: 1 / -1;
-    padding: 5rem 2rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
-  .empty-state-icon {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--muted);
-    margin-bottom: 0.5rem;
-  }
-  .empty-state h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.8rem;
-    color: var(--white);
-    letter-spacing: 0.04em;
-  }
-  .empty-state p {
-    font-size: 0.85rem;
-    color: var(--muted);
-    max-width: 280px;
-    line-height: 1.6;
-  }
-  .empty-state button {
-    margin-top: 0.5rem;
-    background: none;
-    border: 1px solid rgba(255,255,255,0.15);
-    color: var(--white);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.8rem;
-    padding: 0.6rem 1.4rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .empty-state button:hover { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.05); }
-
-  .loading-state, .error-state {
+  .loading-state, .empty-state, .error-state {
     grid-column: 1 / -1;
     padding: 4rem;
     text-align: center;
@@ -1155,11 +1014,11 @@
     nav { padding: 1rem 1.25rem; }
     nav ul { display: none; }
 
-    /* Hero — más compacto en mobile */
-    .hero { padding: 5.5rem 1.25rem 2.5rem; min-height: auto; justify-content: flex-start; }
-    .hero h1 { font-size: clamp(3rem, 16vw, 5.5rem); }
-    .hero-sub { font-size: 0.85rem; margin-top: 1rem; max-width: 100%; }
-    .hero-actions { flex-direction: column; gap: 0.6rem; margin-top: 1.5rem; }
+    /* Hero */
+    .hero { padding: 7rem 1.25rem 3rem; min-height: auto; justify-content: flex-start; }
+    .hero h1 { font-size: clamp(3.5rem, 18vw, 6rem); }
+    .hero-sub { font-size: 0.9rem; margin-top: 1.25rem; }
+    .hero-actions { flex-direction: column; gap: 0.75rem; }
     .hero-actions a { width: 100%; justify-content: center; }
     .hero-number { display: none; }
 
@@ -1172,19 +1031,15 @@
     .section { padding: 3rem 1.25rem; }
     .section-title { font-size: clamp(2rem, 10vw, 3rem); }
 
-    /* Catalog controls — búsqueda + sort en fila */
-    .catalog-header { flex-direction: column; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
-    .catalog-controls { flex-direction: row; width: 100%; gap: 0.5rem; }
-    .search-box { flex: 1; }
+    /* Catalog controls */
+    .catalog-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .catalog-controls { flex-direction: column; width: 100%; gap: 0.6rem; }
+    .search-box { width: 100%; }
     .search-box input { width: 100%; font-size: 16px; }
-    .filter-select { display: none; } /* reemplazado por pills */
-    .sort-select { font-size: 16px; flex-shrink: 0; }
+    .filter-select, .sort-select { width: 100%; font-size: 16px; }
 
-    /* Product grid */
-    #product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .product-img-wrap { height: 160px; }
-    .product-name { font-size: 0.88rem; }
-    .product-price { font-size: 1.3rem; }
+    /* Product grid — 1 col on small, 2 col on medium mobile */
+    #product-grid { grid-template-columns: 1fr; gap: 10px; }
 
     /* About */
     .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
@@ -1199,16 +1054,77 @@
     footer { flex-direction: column; text-align: center; padding: 2rem 1.25rem; gap: 1rem; }
     footer div { justify-content: center; }
 
-    /* Botones flotantes — separados */
+    /* Floating WA button */
     .wa-float { bottom: 1.25rem; right: 1.25rem; width: 50px; height: 50px; }
     .wa-float svg { width: 24px; height: 24px; }
-    .cart-float { bottom: 5rem; right: 1.25rem; }
   }
 
-  @media (min-width: 769px) and (max-width: 1100px) {
-    #product-grid { grid-template-columns: repeat(3, 1fr); }
+  @media (min-width: 480px) and (max-width: 768px) {
+    #product-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
+  .product-lista {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  /* Precio efectivo destacado */
+  .product-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.45rem;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .price-efectivo-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 1px;
+  }
+  .price-lista-row {
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .price-lista-row .lista-label {
+    color: var(--muted);
+  }
+  .price-lista-row .lista-val {
+    color: #bbb;
+    font-weight: 400;
+  }
+
+  .btn-cart {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    background: transparent;
+    border: 1px solid rgba(245,197,24,0.45);
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    padding: 0.45rem 0.8rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-cart:hover { background: rgba(245,197,24,0.1); border-color: var(--accent); transform: translateY(-1px); }
+  .btn-cart.in-cart { background: rgba(245,197,24,0.15); border-color: var(--accent); }
+
+  .product-footer-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: flex-end;
+  }
 
   /* CART PANEL */
   .cart-panel {
@@ -1791,22 +1707,23 @@
     <div class="catalog-controls">
       <div class="search-box">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="search" placeholder="Buscar producto o marca...">
+        <input type="text" id="search" placeholder="Buscar producto...">
       </div>
+      <select class="filter-select" id="cat-select" onchange="setActiveCat(this.value)">
+        <option value="">Todas las categorías</option>
+      </select>
       <select class="filter-select" id="cat-filter">
         <option value="">Todas las marcas</option>
       </select>
       <select class="sort-select" id="sort">
-        <option value="">Ordenar</option>
+        <option value="">Ordenar por</option>
         <option value="az">A → Z</option>
         <option value="za">Z → A</option>
-        <option value="asc">Precio ↑</option>
-        <option value="desc">Precio ↓</option>
+        <option value="asc">Precio: menor a mayor</option>
+        <option value="desc">Precio: mayor a menor</option>
       </select>
     </div>
   </div>
-
-  <div class="cat-pills-wrap" id="cat-pills"></div>
 
   <div id="product-grid">
     <div class="loading-state">
@@ -1999,18 +1916,12 @@ function cardQtyChange(productId, delta, cardIdx) {
     var qty = cart[productId].qty;
     var row = document.getElementById('qrow-' + cardIdx);
     if (row && row.classList.contains('btn-cart')) {
-      // Animación de check antes de swap
-      row.classList.add('added');
-      row.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Agregado';
-      setTimeout(function() {
-        var r2 = document.getElementById('qrow-' + cardIdx);
-        if (!r2) return;
-        r2.outerHTML = '<div class="card-qty-row" id="qrow-' + cardIdx + '">'
-          + '<button class="card-qty-btn" onclick="cardQtyChange(\'' + pidEsc + '\',-1,\'' + cardIdx + '\');event.stopPropagation()">−</button>'
-          + '<span class="card-qty-num" id="qnum-' + cardIdx + '">' + qty + '</span>'
-          + '<button class="card-qty-btn" onclick="cardQtyChange(\'' + pidEsc + '\',1,\'' + cardIdx + '\');event.stopPropagation()">+</button>'
-          + '</div>';
-      }, 500);
+      // Swap button → counter
+      row.outerHTML = '<div class="card-qty-row" id="qrow-' + cardIdx + '">'
+        + '<button class="card-qty-btn" onclick="cardQtyChange(\'' + pidEsc + '\',-1,\'' + cardIdx + '\');event.stopPropagation()">−</button>'
+        + '<span class="card-qty-num" id="qnum-' + cardIdx + '">' + qty + '</span>'
+        + '<button class="card-qty-btn" onclick="cardQtyChange(\'' + pidEsc + '\',1,\'' + cardIdx + '\');event.stopPropagation()">+</button>'
+        + '</div>';
     } else {
       var qnum = document.getElementById('qnum-' + cardIdx);
       if (qnum) qnum.textContent = qty;
@@ -2148,12 +2059,7 @@ function renderProducts(products) {
   var grid = document.getElementById('product-grid');
   var count = document.getElementById('results-count');
   if (!products.length) {
-    grid.innerHTML = '<div class="empty-state">'
-      + '<div class="empty-state-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>'
-      + '<h3>Sin resultados</h3>'
-      + '<p>No encontramos productos con esa búsqueda. Probá con otro término o limpiar los filtros.</p>'
-      + '<button onclick="clearFilters()">Limpiar filtros</button>'
-      + '</div>';
+    grid.innerHTML = '<div class="empty-state">No se encontraron productos.</div>';
     count.textContent = '';
     return;
   }
@@ -2377,42 +2283,19 @@ function buildCategoryPills() {
   }).sort();
   if (!cats.length) return;
 
-  var wrap = document.getElementById('cat-pills');
-  if (!wrap) return;
-  wrap.innerHTML = '';
-
-  // Pill "Todas"
-  var allPill = document.createElement('button');
-  allPill.className = 'cat-pill active';
-  allPill.innerHTML = 'Todas <span class="pill-count">' + allProducts.length + '</span>';
-  allPill.onclick = function() { setActiveCat('', this); };
-  wrap.appendChild(allPill);
-
+  var sel = document.getElementById('cat-select');
+  sel.innerHTML = '<option value="">Todas las categorías</option>';
   cats.forEach(function(c) {
-    var pill = document.createElement('button');
-    pill.className = 'cat-pill';
-    pill.innerHTML = c + ' <span class="pill-count">' + catCount[c] + '</span>';
-    pill.onclick = (function(cat, el) {
-      return function() { setActiveCat(cat, el); };
-    })(c, pill);
-    wrap.appendChild(pill);
+    var o = document.createElement('option');
+    o.value = c;
+    o.textContent = c + ' (' + catCount[c] + ')';
+    sel.appendChild(o);
   });
 }
 
-function setActiveCat(cat, pillEl) {
+function setActiveCat(cat) {
   activeCat = cat;
-  // Actualizar estado visual de pills
-  var pills = document.querySelectorAll('.cat-pill');
-  pills.forEach(function(p) { p.classList.remove('active'); });
-  if (pillEl) pillEl.classList.add('active');
   applyFilters();
-}
-
-function clearFilters() {
-  document.getElementById('search').value = '';
-  document.getElementById('cat-filter').value = '';
-  document.getElementById('sort').value = '';
-  setActiveCat('', document.querySelector('.cat-pill'));
 }
 
 function showError(msg) {
