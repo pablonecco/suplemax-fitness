@@ -367,15 +367,85 @@
     padding-bottom: 4px;
   }
 
-  #ofertas-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
+  /* CARRUSEL WRAPPER */
+  .ofertas-carousel-wrap {
     position: relative;
     z-index: 1;
   }
 
+  .ofertas-carousel-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .ofertas-nav-arrows {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .oferta-arrow {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(232,32,10,0.12);
+    border: 1px solid rgba(232,32,10,0.4);
+    color: var(--white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    flex-shrink: 0;
+  }
+  .oferta-arrow:hover:not(:disabled) {
+    background: rgba(232,32,10,0.3);
+    border-color: var(--red);
+    transform: scale(1.08);
+  }
+  .oferta-arrow:disabled {
+    opacity: 0.25;
+    cursor: default;
+  }
+
+  .ofertas-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .oferta-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transition: background 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+  .oferta-dot.active {
+    background: var(--red);
+    transform: scale(1.4);
+  }
+
+  /* TRACK */
+  #ofertas-grid {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  #ofertas-grid::-webkit-scrollbar { display: none; }
+
   .oferta-card {
+    flex: 0 0 calc(50% - 10px);
+    min-width: 0;
+    scroll-snap-align: start;
     background: rgba(20,5,5,0.9);
     border: 1px solid rgba(232,32,10,0.55);
     border-radius: 4px;
@@ -418,7 +488,7 @@
 
   .oferta-img-wrap {
     width: calc(100% - 20px);
-    height: 160px;
+    height: 180px;
     background: #f8f8f8;
     display: flex;
     align-items: center;
@@ -502,18 +572,14 @@
     margin-top: 2px;
   }
 
-  @media (max-width: 1100px) {
-    #ofertas-grid { grid-template-columns: repeat(3, 1fr); }
-  }
-
   @media (max-width: 700px) {
-    #ofertas-grid { grid-template-columns: repeat(2, 1fr); }
     #ofertas { padding: 3rem 1.25rem; }
     .ofertas-subtitle { display: none; }
+    .oferta-card { flex: 0 0 calc(85% - 10px); }
   }
 
   @media (max-width: 400px) {
-    #ofertas-grid { grid-template-columns: 1fr; }
+    .oferta-card { flex: 0 0 calc(92% - 10px); }
   }
 
   /* CATALOG */
@@ -1611,9 +1677,22 @@
     <h2 class="ofertas-title">OFERTAS <em>SEMANALES</em></h2>
     <span class="ofertas-subtitle">Precios especiales por tiempo limitado</span>
   </div>
-  <div id="ofertas-grid">
-    <div class="loading-state">
-      <div class="loading-dots"><span></span><span></span><span></span></div>
+  <div class="ofertas-carousel-wrap">
+    <div class="ofertas-carousel-nav">
+      <div class="ofertas-dots" id="ofertas-dots"></div>
+      <div class="ofertas-nav-arrows">
+        <button class="oferta-arrow" id="oferta-prev" onclick="ofertaNav(-1)" aria-label="Anterior">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="oferta-arrow" id="oferta-next" onclick="ofertaNav(1)" aria-label="Siguiente">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="ofertas-grid">
+      <div class="loading-state">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -2348,6 +2427,100 @@ function renderOfertas(ofertas) {
 
     grid.appendChild(card);
   }
+
+  // Init carousel
+  initOfertasCarousel(ofertas.length);
+}
+
+function initOfertasCarousel(total) {
+  var grid = document.getElementById('ofertas-grid');
+  var dotsWrap = document.getElementById('ofertas-dots');
+  if (!grid || !dotsWrap) return;
+
+  // Cuántas cards se ven por vez (2 en desktop, 1 en móvil pequeño)
+  function getVisible() {
+    return window.innerWidth <= 500 ? 1 : 2;
+  }
+
+  var totalSlides = Math.ceil(total / getVisible());
+  var currentSlide = 0;
+
+  // Build dots
+  function buildDots() {
+    var slides = Math.ceil(total / getVisible());
+    dotsWrap.innerHTML = '';
+    for (var d = 0; d < slides; d++) {
+      var dot = document.createElement('button');
+      dot.className = 'oferta-dot' + (d === currentSlide ? ' active' : '');
+      dot.setAttribute('aria-label', 'Ir a slide ' + (d+1));
+      dot.onclick = (function(idx) { return function() { goSlide(idx); }; })(d);
+      dotsWrap.appendChild(dot);
+    }
+  }
+
+  function updateArrows() {
+    var slides = Math.ceil(total / getVisible());
+    var prev = document.getElementById('oferta-prev');
+    var next = document.getElementById('oferta-next');
+    if (prev) prev.disabled = currentSlide === 0;
+    if (next) next.disabled = currentSlide >= slides - 1;
+  }
+
+  function updateDots() {
+    var dots = dotsWrap.querySelectorAll('.oferta-dot');
+    dots.forEach(function(d, i) {
+      d.classList.toggle('active', i === currentSlide);
+    });
+  }
+
+  function goSlide(idx) {
+    var slides = Math.ceil(total / getVisible());
+    currentSlide = Math.max(0, Math.min(idx, slides - 1));
+    var vis = getVisible();
+    // Scroll por cantidad de cards visibles
+    var cardWidth = grid.scrollWidth / total;
+    grid.scrollTo({ left: currentSlide * vis * cardWidth, behavior: 'smooth' });
+    updateDots();
+    updateArrows();
+  }
+
+  // Exponer para los botones de flecha
+  window._ofertaGoSlide = goSlide;
+  window._ofertaGetVisible = getVisible;
+  window._ofertaGetTotal = function() { return total; };
+
+  // Sync dots al hacer scroll manual (touch)
+  grid.addEventListener('scroll', function() {
+    var vis = getVisible();
+    var cardWidth = grid.scrollWidth / total;
+    var newSlide = Math.round(grid.scrollLeft / (vis * cardWidth));
+    var slides = Math.ceil(total / vis);
+    currentSlide = Math.max(0, Math.min(newSlide, slides - 1));
+    updateDots();
+    updateArrows();
+  });
+
+  // Rebuild on resize
+  window.addEventListener('resize', function() {
+    currentSlide = 0;
+    buildDots();
+    updateArrows();
+    grid.scrollTo({ left: 0, behavior: 'instant' });
+  });
+
+  buildDots();
+  updateArrows();
+}
+
+function ofertaNav(dir) {
+  if (!window._ofertaGoSlide) return;
+  var vis = window._ofertaGetVisible();
+  var total = window._ofertaGetTotal();
+  var slides = Math.ceil(total / vis);
+  var grid = document.getElementById('ofertas-grid');
+  var cardWidth = grid.scrollWidth / total;
+  var currentSlide = Math.round(grid.scrollLeft / (vis * cardWidth));
+  window._ofertaGoSlide(currentSlide + dir);
 }
 
 function loadProducts() {
