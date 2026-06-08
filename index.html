@@ -447,22 +447,46 @@
     min-width: 0;
     scroll-snap-align: start;
     background: rgba(20,5,5,0.9);
-    border: 1px solid rgba(232,32,10,0.55);
-    border-radius: 4px;
+    border: 1px solid rgba(232,32,10,0.3);
+    border-radius: 12px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     cursor: pointer;
     isolation: isolate;
-    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    transition: background 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
     position: relative;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
   }
 
   .oferta-card:hover {
     background: rgba(30,8,8,0.95);
     border-color: var(--red);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 32px rgba(232,32,10,0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 40px rgba(232,32,10,0.22), 0 2px 8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .oferta-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(255,255,255,0.06) 50%,
+      transparent 100%
+    );
+    transform: skewX(-15deg);
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: none;
+  }
+  .oferta-card:hover::after {
+    opacity: 1;
+    left: 130%;
+    transition: left 0.55s ease, opacity 0.1s;
   }
 
   .oferta-card-ribbon {
@@ -663,20 +687,62 @@
 
   .product-card {
     background: var(--gray);
-    border: 1px solid rgba(232,32,10,0.35);
-    border-radius: 4px;
+    border: 1px solid rgba(232,32,10,0.2);
+    border-radius: 12px;
     overflow: hidden;
-    transition: background 0.2s, border-color 0.2s;
+    transition: background 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
     display: flex;
     flex-direction: column;
     gap: 0;
     cursor: pointer;
     isolation: isolate;
+    position: relative;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
   }
-  .product-card:hover { background: var(--gray2); border-color: rgba(232,32,10,0.45); }
+  .product-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(232,32,10,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s;
+    z-index: 0;
+  }
+  .product-card:hover {
+    background: var(--gray2);
+    border-color: rgba(232,32,10,0.6);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(232,32,10,0.18), 0 2px 8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .product-card:hover::before { opacity: 1; }
+  .product-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(255,255,255,0.06) 50%,
+      transparent 100%
+    );
+    transform: skewX(-15deg);
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: none;
+  }
+  .product-card:hover::after {
+    opacity: 1;
+    left: 130%;
+    transition: left 0.55s ease, opacity 0.1s;
+  }
 
   .product-img-wrap {
-    width: 100%;
+    width: calc(100% - 20px);
     height: 160px;
     background: #f8f8f8;
     display: flex;
@@ -685,9 +751,8 @@
     overflow: hidden;
     position: relative;
     padding: 10px;
-    border-radius: 6px;
+    border-radius: 8px;
     margin: 10px 10px 0 10px;
-    width: calc(100% - 20px);
   }
   .product-img-wrap::before {
     content: '';
@@ -2901,5 +2966,48 @@ loadProducts();
     </div>
   </div>
 </div>
+<script>
+(function() {
+  var MAX_TILT = 8;
+  var grid = document.getElementById('product-grid');
+  if (!grid) return;
+
+  function applyTilt(card, e) {
+    var rect = card.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+    var cx = rect.width / 2;
+    var cy = rect.height / 2;
+    var rotX = ((y - cy) / cy) * -MAX_TILT;
+    var rotY = ((x - cx) / cx) * MAX_TILT;
+    card.style.transform = 'translateY(-4px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg)';
+    card.style.transition = 'transform 0.08s ease, box-shadow 0.25s, border-color 0.25s, background 0.25s';
+  }
+
+  function resetTilt(card) {
+    card.style.transform = '';
+    card.style.transition = 'transform 0.35s ease, box-shadow 0.25s, border-color 0.25s, background 0.25s';
+  }
+
+  grid.addEventListener('mousemove', function(e) {
+    var card = e.target.closest('.product-card');
+    if (card) applyTilt(card, e);
+  });
+
+  grid.addEventListener('mouseleave', function(e) {
+    var card = e.target.closest('.product-card');
+    if (card) resetTilt(card);
+  }, true);
+
+  grid.addEventListener('mouseout', function(e) {
+    var card = e.target.closest('.product-card');
+    if (card && !card.contains(e.relatedTarget)) resetTilt(card);
+  });
+
+  var style = document.createElement('style');
+  style.textContent = '#product-grid .product-card { transform-style: preserve-3d; will-change: transform; }';
+  document.head.appendChild(style);
+})();
+</script>
 </body>
 </html>
