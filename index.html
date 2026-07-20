@@ -678,51 +678,6 @@
     color: #f5f3ee;
   }
 
-  /* PRICE RANGE FILTER */
-  .price-filter {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 0.55rem 1rem;
-    border-radius: 2px;
-  }
-  .price-filter-label {
-    font-size: 0.78rem;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-  .price-filter-label span { color: var(--accent); font-weight: 600; }
-  .price-range {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 130px;
-    height: 4px;
-    border-radius: 2px;
-    background: rgba(255,255,255,0.18);
-    outline: none;
-    cursor: pointer;
-  }
-  .price-range::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    border: 2px solid var(--black);
-  }
-  .price-range::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    border: 2px solid var(--black);
-  }
-
   /* PRODUCT GRID */
   #product-grid {
     display: grid;
@@ -960,51 +915,6 @@
     0%, 100% { opacity: 0.2; transform: translateY(0); }
     50% { opacity: 1; transform: translateY(-4px); }
   }
-
-  /* SKELETON LOADERS */
-  @keyframes shimmer {
-    0% { background-position: -400px 0; }
-    100% { background-position: 400px 0; }
-  }
-
-  .skeleton-block {
-    background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.1) 37%, rgba(255,255,255,0.04) 63%);
-    background-size: 400px 100%;
-    animation: shimmer 1.4s ease-in-out infinite;
-    border-radius: 4px;
-  }
-
-  .skeleton-card {
-    background: var(--gray);
-    border: 1px solid rgba(232,32,10,0.15);
-    border-radius: 12px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  .skeleton-card .skeleton-img {
-    width: calc(100% - 20px);
-    height: 160px;
-    margin: 10px 10px 0 10px;
-    border-radius: 8px;
-  }
-  .skeleton-card-body {
-    padding: 0.85rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-  .skeleton-card-body .skeleton-block.line-sm { height: 10px; width: 35%; }
-  .skeleton-card-body .skeleton-block.line-md { height: 14px; width: 78%; }
-  .skeleton-card-body .skeleton-block.line-lg { height: 20px; width: 45%; margin-top: 0.3rem; }
-
-  .skeleton-oferta {
-    flex: 0 0 calc(50% - 10px);
-    min-width: 0;
-  }
-  .skeleton-oferta .skeleton-img { height: 180px; }
-  @media (max-width: 700px) { .skeleton-oferta { flex: 0 0 calc(85% - 10px); } }
-  @media (max-width: 400px) { .skeleton-oferta { flex: 0 0 calc(92% - 10px); } }
 
   .results-count {
     font-size: 0.75rem;
@@ -1659,10 +1569,6 @@
     max-height: 300px;
     object-fit: contain;
     display: block;
-    transition: transform 0.4s ease;
-  }
-  .product-modal-img:hover img {
-    transform: scale(1.4);
   }
   .product-modal-body {
     padding: 2rem;
@@ -1903,8 +1809,6 @@
     }
     .catalog-controls .search-box { grid-column: 1 / -1; width: 100%; }
     .catalog-controls .sort-select { grid-column: 1 / -1; }
-    .catalog-controls .price-filter { grid-column: 1 / -1; width: 100%; }
-    .price-range { width: 100%; flex: 1; }
     .scroll-top-btn { bottom: 6.5rem; left: 1rem; width: 40px; height: 40px; }
   }
 
@@ -1954,36 +1858,6 @@
   }
   @media (min-width: 1100px) and (max-width: 1400px) {
     #product-grid { grid-template-columns: repeat(4, 1fr); }
-  }
-
-  /* TOAST */
-  .toast {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%) translateY(16px);
-    background: var(--gray2);
-    border: 1px solid rgba(245,197,24,0.4);
-    color: var(--white);
-    padding: 0.75rem 1.35rem;
-    border-radius: 4px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    letter-spacing: 0.01em;
-    box-shadow: 0 10px 32px rgba(0,0,0,0.55);
-    z-index: 10050;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    max-width: 90vw;
-    text-align: center;
-  }
-  .toast.visible {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-  @media (max-width: 600px) {
-    .toast { bottom: 5.5rem; width: calc(100% - 2.5rem); }
   }
 </style>
 </head>
@@ -2092,10 +1966,9 @@
       </div>
     </div>
     <div id="ofertas-grid">
-      <div class="skeleton-card skeleton-oferta"><div class="skeleton-block skeleton-img"></div><div class="skeleton-card-body"><div class="skeleton-block line-sm"></div><div class="skeleton-block line-md"></div><div class="skeleton-block line-lg"></div></div></div>
-      <div class="skeleton-card skeleton-oferta"><div class="skeleton-block skeleton-img"></div><div class="skeleton-card-body"><div class="skeleton-block line-sm"></div><div class="skeleton-block line-md"></div><div class="skeleton-block line-lg"></div></div></div>
-      <div class="skeleton-card skeleton-oferta"><div class="skeleton-block skeleton-img"></div><div class="skeleton-card-body"><div class="skeleton-block line-sm"></div><div class="skeleton-block line-md"></div><div class="skeleton-block line-lg"></div></div></div>
-      <div class="skeleton-card skeleton-oferta"><div class="skeleton-block skeleton-img"></div><div class="skeleton-card-body"><div class="skeleton-block line-sm"></div><div class="skeleton-block line-md"></div><div class="skeleton-block line-lg"></div></div></div>
+      <div class="loading-state">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -2125,22 +1998,14 @@
         <option value="asc">Precio: menor a mayor</option>
         <option value="desc">Precio: mayor a menor</option>
       </select>
-      <div class="price-filter">
-        <label class="price-filter-label" for="price-max">Hasta <span id="price-max-label">—</span></label>
-        <input type="range" class="price-range" id="price-max">
-      </div>
     </div>
   </div>
 
   <div id="product-grid">
-    <div class="skeleton-card"><div class="skeleton-block skeleton-img"></div><div class="skeleton-card-body"><div class="skeleton-block line-sm"></div><div class="skeleton-block line-md"></div><div class="skeleton-block line-lg"></div></div></div>
-    <div class="skeleton-card"><div class="skeleton-block skeleton-img"></div><div class="skeleton-card-body"><div class="skeleton-block line-sm"></div><div class="skeleton-block line-md"></div><div class="skeleton-block line-lg"></div></div></div>
-    <div class="skeleton-card"><div class="skeleton-block skeleton-img"></div><div class="skeleton-card-body"><div class="skeleton-block line-sm"></div><div class="skeleton-block line-md"></div><div class="skeleton-block line-lg"></div></div></div>
-    <div class="skeleton-card"><div class="skeleton-block skeleton-img"></div><div class="skeleton-card-body"><div class="skeleton-block line-sm"></div><div class="skeleton-block line-md"></div><div class="skeleton-block line-lg"></div></div></div>
-    <div class="skeleton-card"><div class="skeleton-block skeleton-img"></div><div class="skeleton-card-body"><div class="skeleton-block line-sm"></div><div class="skeleton-block line-md"></div><div class="skeleton-block line-lg"></div></div></div>
-    <div class="skeleton-card"><div class="skeleton-block skeleton-img"></div><div class="skeleton-card-body"><div class="skeleton-block line-sm"></div><div class="skeleton-block line-md"></div><div class="skeleton-block line-lg"></div></div></div>
-    <div class="skeleton-card"><div class="skeleton-block skeleton-img"></div><div class="skeleton-card-body"><div class="skeleton-block line-sm"></div><div class="skeleton-block line-md"></div><div class="skeleton-block line-lg"></div></div></div>
-    <div class="skeleton-card"><div class="skeleton-block skeleton-img"></div><div class="skeleton-card-body"><div class="skeleton-block line-sm"></div><div class="skeleton-block line-md"></div><div class="skeleton-block line-lg"></div></div></div>
+    <div class="loading-state">
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+      <p style="margin-top: 1rem;">Cargando productos...</p>
+    </div>
   </div>
   <div class="pagination-wrap" id="pagination-wrap"></div>
   <p class="page-info" id="page-info"></p>
@@ -2254,9 +2119,6 @@
   <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
 </a>
 
-<!-- TOAST -->
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-
 <script>
 const WA_NUMBER = '5491164445921';
 //const API_URL = 'https://api.sheetbest.com/sheets/5fe69c5d-1965-40d4-b3a6-0a36e19959da';
@@ -2305,19 +2167,6 @@ function makeWALink(item) {
   return 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
 }
 
-// ---- TOAST ----
-var _toastTimer = null;
-function showToast(message) {
-  var toast = document.getElementById('toast');
-  if (!toast) return;
-  toast.textContent = message;
-  toast.classList.add('visible');
-  if (_toastTimer) clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(function() {
-    toast.classList.remove('visible');
-  }, 2000);
-}
-
 // ---- CART FUNCTIONS ----
 // Track which card index corresponds to each pid (rebuilt each render)
 var cardIndexMap = {};
@@ -2361,9 +2210,6 @@ function cardQtyChange(productId, delta, cardIdx) {
     }
   }
   updateCartUI();
-  if (delta > 0) {
-    showToast('✓ ' + (item['PRODUCTO'] || 'Producto') + ' agregado al carrito');
-  }
   // Badge pulse
   var badge = document.getElementById('cart-badge');
   badge.style.transform = 'scale(1.5)';
@@ -2376,7 +2222,6 @@ function addToCart(productId) {
   if (!cart[productId]) cart[productId] = { item: item, qty: 0 };
   cart[productId].qty += 1;
   updateCartUI();
-  showToast('✓ ' + (item['PRODUCTO'] || 'Producto') + ' agregado al carrito');
 }
 
 function removeFromCart(productId) {
@@ -2635,22 +2480,18 @@ function renderProducts(products) {
 }
 
 var activeCat = '';
-var priceFilterReady = false; // true once the price slider bounds are set from real data
 
 function applyFilters() {
   var q = document.getElementById('search').value.toLowerCase();
   var marca = document.getElementById('cat-filter').value;
   var sort = document.getElementById('sort').value;
-  var priceMaxEl = document.getElementById('price-max');
-  var priceMaxVal = (priceFilterReady && priceMaxEl) ? parseFloat(priceMaxEl.value) : null;
 
   var filtered = allProducts.filter(function(item) {
     var texto = ((item['MARCA']||'') + ' ' + (item['PRODUCTO']||'') + ' ' + (item['SABORES']||'')).toLowerCase();
     var matchQ = !q || texto.indexOf(q) >= 0;
     var matchMarca = !marca || (item['MARCA']||'').trim() === marca;
     var matchCat = !activeCat || (item['CATEGORIA']||'').trim() === activeCat;
-    var matchPrice = priceMaxVal === null || toNum(item['PRECIO LISTA'] || item['EFECTIVO']) <= priceMaxVal;
-    return matchQ && matchMarca && matchCat && matchPrice;
+    return matchQ && matchMarca && matchCat;
   });
 
   if (sort === 'az') filtered.sort(function(a,b){ return (a['PRODUCTO']||'').localeCompare(b['PRODUCTO']||''); });
@@ -3024,7 +2865,6 @@ function loadProducts() {
       });
 
       buildCategoryPills();
-      setupPriceFilter();
       lastFiltered = allProducts;
       currentPage = 1;
       renderPage();
@@ -3032,42 +2872,8 @@ function loadProducts() {
       document.getElementById('search').addEventListener('input', applyFilters);
       document.getElementById('cat-filter').addEventListener('change', applyFilters);
       document.getElementById('sort').addEventListener('change', applyFilters);
-      var priceEl = document.getElementById('price-max');
-      if (priceEl) {
-        priceEl.addEventListener('input', function() { updatePriceLabel(); });
-        priceEl.addEventListener('change', applyFilters);
-      }
-
-      checkUrlForProduct();
     })
     .catch(function(e) { showError(e.message); });
-}
-
-function setupPriceFilter() {
-  var priceEl = document.getElementById('price-max');
-  if (!priceEl) return;
-  var prices = allProducts
-    .map(function(item) { return toNum(item['PRECIO LISTA'] || item['EFECTIVO']); })
-    .filter(function(p) { return p > 0; });
-  if (!prices.length) return;
-
-  var minPrice = Math.floor(prices.reduce(function(a, b) { return Math.min(a, b); }));
-  var maxPrice = Math.ceil(prices.reduce(function(a, b) { return Math.max(a, b); }));
-  if (minPrice >= maxPrice) maxPrice = minPrice + 1;
-
-  priceEl.min = minPrice;
-  priceEl.max = maxPrice;
-  priceEl.value = maxPrice;
-  priceEl.step = Math.max(1, Math.round((maxPrice - minPrice) / 100));
-
-  priceFilterReady = true;
-  updatePriceLabel();
-}
-
-function updatePriceLabel() {
-  var priceEl = document.getElementById('price-max');
-  var label = document.getElementById('price-max-label');
-  if (priceEl && label) label.textContent = formatARS(priceEl.value);
 }
 
 
@@ -3083,9 +2889,6 @@ function modalQtyChange(delta) {
   updateCartUI();
   renderModalCartBtn(productId);
   renderPage();
-  if (delta > 0) {
-    showToast('✓ ' + (_modalItem['PRODUCTO'] || 'Producto') + ' agregado al carrito');
-  }
 }
 
 function renderModalCartBtn(productId) {
@@ -3187,7 +2990,6 @@ function openProductModal(item) {
   // Actions — build with DOM, no innerHTML string quoting issues
   _modalItem = item;
   var pid = getProductId(item);
-  updateUrlForProduct(pid);
   var actionsEl = document.getElementById('modal-actions');
   actionsEl.innerHTML = '';
 
@@ -3199,104 +3001,21 @@ function openProductModal(item) {
   waBtn.innerHTML = WA_SVG + ' Consultar por WhatsApp';
   actionsEl.appendChild(waBtn);
 
-  var shareBtn = document.createElement('button');
-  shareBtn.type = 'button';
-  shareBtn.className = 'btn-outline';
-  shareBtn.style.cssText = 'background:none;cursor:pointer;font-family:inherit;justify-content:center';
-  shareBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Compartir';
-  shareBtn.onclick = function() { shareProduct(item); };
-  actionsEl.appendChild(shareBtn);
-
   renderModalCartBtn(pid);
 
   document.getElementById('product-modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
-function legacyCopyText(text) {
-  var ta = document.createElement('textarea');
-  ta.value = text;
-  ta.setAttribute('readonly', '');
-  ta.style.position = 'fixed';
-  ta.style.top = '0';
-  ta.style.left = '-9999px';
-  document.body.appendChild(ta);
-  ta.focus();
-  ta.select();
-  var ok = false;
-  try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
-  document.body.removeChild(ta);
-  return ok;
-}
-
-function shareProduct(item) {
-  var marca = (item['MARCA'] || '').trim();
-  var nombre = (item['PRODUCTO'] || '').trim();
-  var precio = (item['EFECTIVO'] || item['PRECIO LISTA'] || '').trim();
-  var texto = marca + ' ' + nombre + (precio ? ' - ' + precio : '') + ' — SUPLEMAX';
-  var fullText = texto + ' ' + location.href;
-
-  // Both navigator.share and navigator.clipboard require a secure context
-  // (https/localhost). Calling either from file:// can make Chrome kill the
-  // whole renderer (RESULT_CODE_KILLED_BAD_MESSAGE) — that's a browser-process
-  // crash, not a catchable JS error, so it must be avoided *before* calling,
-  // not caught after. Only attempt the modern APIs when isSecureContext is true.
-  if (window.isSecureContext && navigator.share) {
-    try {
-      navigator.share({ title: marca + ' ' + nombre, text: texto, url: location.href }).catch(function() {});
-    } catch (e) { /* ignore */ }
-    return;
-  }
-
-  if (window.isSecureContext && navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(fullText).then(function() {
-      showToast('Enlace copiado al portapapeles');
-    }).catch(function() {
-      if (legacyCopyText(fullText)) showToast('Enlace copiado al portapapeles');
-      else showToast('No se pudo copiar el enlace');
-    });
-    return;
-  }
-
-  if (legacyCopyText(fullText)) {
-    showToast('Enlace copiado al portapapeles');
-  } else {
-    showToast('No se pudo compartir el producto');
-  }
-}
-
 function closeProductModalDirect() {
   document.getElementById('product-modal-overlay').classList.remove('open');
   document.body.style.overflow = '';
-  _modalItem = null;
-  clearProductUrl();
 }
 
 function closeProductModal(e) {
   if (e.target === document.getElementById('product-modal-overlay')) {
     closeProductModalDirect();
   }
-}
-
-// ---- SHAREABLE PRODUCT LINK (#producto=marca||nombre) ----
-function updateUrlForProduct(pid) {
-  try {
-    history.replaceState(null, '', '#producto=' + encodeURIComponent(pid));
-  } catch (e) { /* ignore, eg. sandboxed file:// edge cases */ }
-}
-
-function clearProductUrl() {
-  try {
-    history.replaceState(null, '', location.pathname + location.search);
-  } catch (e) { /* ignore */ }
-}
-
-function checkUrlForProduct() {
-  var hash = location.hash || '';
-  if (hash.indexOf('#producto=') !== 0) return;
-  var pid = decodeURIComponent(hash.slice('#producto='.length));
-  var item = findProduct(pid);
-  if (item) openProductModal(item);
 }
 
 document.addEventListener('keydown', function(e) {
