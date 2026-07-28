@@ -86,24 +86,42 @@
   }
 
   nav ul a {
+    position: relative;
     color: var(--muted);
     text-decoration: none;
     font-size: 0.8rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     font-weight: 400;
+    padding-bottom: 3px;
     transition: color 0.2s;
   }
+  nav ul a:not(.nav-cta)::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width 0.25s ease;
+  }
   nav ul a:hover { color: var(--accent); }
+  nav ul a:not(.nav-cta):hover::after { width: 100%; }
 
   .nav-cta {
     background: var(--red);
     color: var(--white) !important;
-    padding: 0.5rem 1.25rem;
-    border-radius: 2px;
+    padding: 0.55rem 1.35rem;
+    border-radius: 8px;
     font-weight: 500 !important;
+    transition: background 0.2s, transform 0.15s;
   }
-  .nav-cta:hover { background: var(--red-dark); color: var(--white) !important; }
+  .nav-cta:hover {
+    background: var(--red-dark);
+    color: var(--white) !important;
+    transform: translateY(-1px);
+  }
 
   /* HERO */
   .hero {
@@ -215,9 +233,15 @@
     letter-spacing: 0.05em;
     padding: 0.9rem 2rem;
     border-radius: 8px;
-    transition: border-color 0.2s, transform 0.15s;
+    transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.15s;
   }
   .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+
+  .hero-actions .btn-outline:hover {
+    border-color: var(--wa);
+    color: var(--wa);
+    background: rgba(37,211,102,0.08);
+  }
 
   .hero-number {
     position: absolute;
@@ -1481,20 +1505,25 @@
   /* CART TOGGLE NAV BUTTON */
   .cart-nav-btn {
     position: relative;
-    background: none;
+    background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.15);
     color: var(--white);
-    padding: 0.45rem 0.9rem;
-    border-radius: 2px;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-family: 'DM Sans', sans-serif;
     font-size: 0.78rem;
-    transition: border-color 0.2s, color 0.2s;
+    transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.15s;
   }
-  .cart-nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .cart-nav-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(245,197,24,0.08);
+    transform: translateY(-1px);
+  }
 
   .cart-badge {
     position: absolute;
