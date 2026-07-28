@@ -898,7 +898,7 @@
     font-weight: 500;
     letter-spacing: 0.08em;
     padding: 0.5rem 1rem;
-    border-radius: 2px;
+    border-radius: 6px;
     transition: background 0.2s, transform 0.15s;
     white-space: nowrap;
   }
@@ -909,7 +909,7 @@
     align-items: center;
     gap: 0;
     border: 1px solid rgba(245,197,24,0.5);
-    border-radius: 2px;
+    border-radius: 6px;
     overflow: hidden;
   }
   .card-qty-btn {
@@ -1280,7 +1280,7 @@
     font-weight: 500;
     letter-spacing: 0.08em;
     padding: 0.45rem 0.8rem;
-    border-radius: 2px;
+    border-radius: 6px;
     cursor: pointer;
     transition: background 0.2s, border-color 0.2s, transform 0.15s;
     white-space: nowrap;
@@ -1737,14 +1737,31 @@
   }
   .product-modal-actions {
     display: flex;
-    gap: 0.75rem;
+    flex-direction: column;
+    gap: 0.6rem;
     margin-top: auto;
     padding-top: 1rem;
-    flex-wrap: wrap;
   }
   .product-modal-actions .btn-primary {
+    justify-content: center;
+    border-radius: 8px;
+  }
+  .product-modal-actions-secondary {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .product-modal-actions-secondary .btn-outline,
+  .product-modal-actions-secondary .btn-cart {
     flex: 1;
     justify-content: center;
+    padding: 0.65rem 1rem;
+    font-size: 0.78rem;
+    border-radius: 8px;
+  }
+  .product-modal-actions-secondary .card-qty-row {
+    flex: 1;
+    justify-content: center;
+    border-radius: 8px;
   }
   @media (max-width: 600px) {
     .product-modal-overlay {
@@ -1940,12 +1957,19 @@
 
   /* Improved mobile tap targets */
   @media (max-width: 768px) {
-    .card-qty-btn { width: 34px; height: 34px; font-size: 1.1rem; }
-    .card-qty-num { font-size: 0.9rem; min-width: 28px; }
-    .btn-cart { padding: 0.55rem 0.9rem; font-size: 0.74rem; }
-    .btn-buy { padding: 0.55rem 0.9rem; font-size: 0.74rem; }
+    .card-qty-btn { width: 30px; height: 30px; font-size: 1rem; }
+    .card-qty-num { font-size: 0.85rem; min-width: 24px; }
+    .btn-cart { padding: 0.4rem 0.6rem; font-size: 0.64rem; }
+    .btn-buy { padding: 0.4rem 0.6rem; font-size: 0.64rem; }
     .oferta-arrow { width: 42px; height: 42px; }
     .page-btn { width: 40px; height: 40px; font-size: 0.88rem; }
+
+    /* Product card footer — price on top, buttons in their own row below */
+    .product-footer { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+    .product-footer-btns { flex-direction: row; align-items: stretch; gap: 0.5rem; }
+    .product-footer-btns .btn-cart,
+    .product-footer-btns .btn-buy,
+    .product-footer-btns .card-qty-row { flex: 1; justify-content: center; }
   }
 
   /* Better product grid on tablet */
@@ -3091,6 +3115,8 @@ function modalQtyChange(delta) {
 function renderModalCartBtn(productId) {
   var actionsEl = document.getElementById('modal-actions');
   if (!actionsEl) return;
+  var secondaryRow = actionsEl.querySelector('.product-modal-actions-secondary');
+  if (!secondaryRow) return;
   var qty = cart[productId] ? cart[productId].qty : 0;
   // Remove existing cart control (first child)
   var existing = document.getElementById('modal-qty-row');
@@ -3122,12 +3148,12 @@ function renderModalCartBtn(productId) {
     container.appendChild(btnPlus);
   } else {
     container.className = 'btn-cart';
-    container.style.cssText = 'padding:.7rem 1.5rem;font-size:.85rem;cursor:pointer';
+    container.style.cssText = 'cursor:pointer';
     container.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Al carrito';
     container.onclick = function() { modalQtyChange(1); };
   }
 
-  actionsEl.insertBefore(container, actionsEl.firstChild);
+  secondaryRow.insertBefore(container, secondaryRow.firstChild);
 }
 
 function openProductModal(item) {
@@ -3195,17 +3221,21 @@ function openProductModal(item) {
   waBtn.href = waLink;
   waBtn.target = '_blank';
   waBtn.className = 'btn-primary';
-  waBtn.style.cssText = 'text-decoration:none;flex:1;justify-content:center';
+  waBtn.style.cssText = 'text-decoration:none;justify-content:center';
   waBtn.innerHTML = WA_SVG + ' Consultar por WhatsApp';
   actionsEl.appendChild(waBtn);
+
+  var secondaryRow = document.createElement('div');
+  secondaryRow.className = 'product-modal-actions-secondary';
+  actionsEl.appendChild(secondaryRow);
 
   var shareBtn = document.createElement('button');
   shareBtn.type = 'button';
   shareBtn.className = 'btn-outline';
-  shareBtn.style.cssText = 'background:none;cursor:pointer;font-family:inherit;justify-content:center';
+  shareBtn.style.cssText = 'background:none;cursor:pointer;font-family:inherit';
   shareBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Compartir';
   shareBtn.onclick = function() { shareProduct(item); };
-  actionsEl.appendChild(shareBtn);
+  secondaryRow.appendChild(shareBtn);
 
   renderModalCartBtn(pid);
 
