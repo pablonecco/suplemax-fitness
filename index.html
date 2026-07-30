@@ -40,6 +40,11 @@
     --ofertas-bg: linear-gradient(135deg, #0e0000 0%, #1a0400 50%, #0a0a0a 100%);
     --oferta-card-bg: rgba(20,5,5,0.9);
     --oferta-card-bg-hover: rgba(30,8,8,0.95);
+    --img-wrap-bg: #f8f8f8;
+    --scrollbar-thumb: rgba(255,255,255,0.2);
+    --scrollbar-thumb-hover: rgba(255,255,255,0.35);
+    --oferta-card-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    --oferta-card-shadow-hover: 0 2px 8px rgba(0,0,0,0.5);
   }
 
   [data-theme="light"] {
@@ -57,9 +62,20 @@
     --accent-text: #a37c00;
     --wa-text: #1c9950;
     --ofertas-bg: linear-gradient(135deg, #fdf3e4 0%, #fbe8d4 50%, #faf8f4 100%);
-    --oferta-card-bg: rgba(255,255,255,0.85);
-    --oferta-card-bg-hover: rgba(255,255,255,0.98);
+    --oferta-card-bg: #ffffff;
+    --oferta-card-bg-hover: #fdf9f2;
+    --img-wrap-bg: #ffffff;
+    --oferta-card-shadow: 0 4px 16px rgba(20,10,5,0.08);
+    --oferta-card-shadow-hover: 0 6px 20px rgba(20,10,5,0.12);
+    --scrollbar-thumb: rgba(20,10,5,0.25);
+    --scrollbar-thumb-hover: rgba(20,10,5,0.4);
   }
+
+  html { scrollbar-color: var(--scrollbar-thumb) transparent; }
+  ::-webkit-scrollbar { width: 12px; height: 12px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 6px; border: 3px solid transparent; background-clip: content-box; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); background-clip: content-box; }
 
   [data-theme="light"] body::before { opacity: 0.15; }
   [data-theme="light"] nav { background: rgba(255,255,255,0.85); }
@@ -189,6 +205,11 @@
     background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(232,32,10,0.18) 0%, transparent 70%),
                 radial-gradient(ellipse 40% 40% at 20% 80%, rgba(245,197,24,0.12) 0%, transparent 60%),
                 radial-gradient(ellipse 60% 50% at 50% 100%, rgba(180,0,0,0.1) 0%, transparent 60%);
+  }
+  [data-theme="light"] .hero-bg {
+    background: radial-gradient(ellipse 50% 40% at 70% 40%, rgba(232,32,10,0.025) 0%, transparent 70%),
+                radial-gradient(ellipse 30% 30% at 20% 80%, rgba(245,197,24,0.02) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 35% at 50% 100%, rgba(180,0,0,0.015) 0%, transparent 60%);
   }
 
   .hero-lines {
@@ -400,6 +421,10 @@
                 radial-gradient(ellipse 50% 60% at 90% 50%, rgba(245,197,24,0.08) 0%, transparent 60%);
     pointer-events: none;
   }
+  [data-theme="light"] #ofertas::before {
+    background: radial-gradient(ellipse 50% 55% at 10% 50%, rgba(232,32,10,0.035) 0%, transparent 60%),
+                radial-gradient(ellipse 35% 40% at 90% 50%, rgba(245,197,24,0.025) 0%, transparent 60%);
+  }
 
   .ofertas-header {
     display: flex;
@@ -542,14 +567,14 @@
     isolation: isolate;
     transition: background 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
     position: relative;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(var(--tint-rgb),0.04);
+    box-shadow: var(--oferta-card-shadow), inset 0 1px 0 rgba(var(--tint-rgb),0.04);
   }
 
   .oferta-card:hover {
     background: var(--oferta-card-bg-hover);
     border-color: var(--red);
     transform: translateY(-4px);
-    box-shadow: 0 14px 40px rgba(232,32,10,0.22), 0 2px 8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(var(--tint-rgb),0.06);
+    box-shadow: 0 14px 40px rgba(232,32,10,0.22), var(--oferta-card-shadow-hover), inset 0 1px 0 rgba(var(--tint-rgb),0.06);
   }
   .oferta-card::after {
     content: '';
@@ -599,7 +624,7 @@
   .oferta-img-wrap {
     width: calc(100% - 20px);
     height: 180px;
-    background: #f8f8f8;
+    background: var(--img-wrap-bg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -893,7 +918,7 @@
   .product-img-wrap {
     width: calc(100% - 20px);
     height: 160px;
-    background: #f8f8f8;
+    background: var(--img-wrap-bg);
     display: flex;
     align-items: center;
     justify-content: center;
