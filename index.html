@@ -2477,7 +2477,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxgLDwk0f0tJfEPRrHY7uDa
 let allProducts = [];
 let cart = {};
 let currentPage = 1;
-const PAGE_SIZE = 25;
+const PAGE_SIZE = 20;
 let lastFiltered = []; // key: productId, value: {item, qty}
 
 function toNum(val) {
@@ -2703,6 +2703,34 @@ function sendCartToWA() {
   window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
 }
 
+// Cuando la última fila queda incompleta (ej: 3 columnas en tablet y sobran 2),
+// las agrupa en una fila flex centrada del mismo ancho que las demás cards.
+function centerIncompleteLastRow(grid) {
+  var style = getComputedStyle(grid);
+  var columns = style.gridTemplateColumns.split(' ').filter(Boolean).length;
+  var count = grid.children.length;
+  var remainder = count % columns;
+  if (!remainder || columns <= 1) return;
+
+  var cardWidth = grid.children[0].getBoundingClientRect().width;
+  var gap = parseFloat(style.columnGap) || 0;
+  var tail = Array.prototype.slice.call(grid.children, count - remainder);
+
+  var row = document.createElement('div');
+  row.className = 'grid-tail-row';
+  row.style.gridColumn = '1 / -1';
+  row.style.display = 'flex';
+  row.style.justifyContent = 'center';
+  row.style.gap = gap + 'px';
+
+  tail.forEach(function(card) {
+    card.style.flex = '0 0 ' + cardWidth + 'px';
+    row.appendChild(card);
+  });
+
+  grid.appendChild(row);
+}
+
 // ---- RENDER ----
 function renderProducts(products) {
   var grid = document.getElementById('product-grid');
@@ -2843,6 +2871,7 @@ function renderProducts(products) {
     grid.appendChild(card);
   }
 
+  centerIncompleteLastRow(grid);
   count.textContent = '';
 }
 
@@ -2882,6 +2911,15 @@ function renderPage() {
   renderProducts(pageItems);
   renderPagination();
 }
+
+// Re-renderiza al cambiar de breakpoint (cambia la cantidad de columnas de la grilla)
+var gridResizeTimer = null;
+window.addEventListener('resize', function() {
+  clearTimeout(gridResizeTimer);
+  gridResizeTimer = setTimeout(function() {
+    if (lastFiltered.length) renderPage();
+  }, 200);
+});
 
 function renderPagination() {
   var total = lastFiltered.length;
