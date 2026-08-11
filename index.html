@@ -253,7 +253,7 @@
   .hero h1 em {
     color: var(--accent-text);
     font-style: normal;
-    text-shadow: 0 0 40px rgba(245,197,24,0.3);
+    text-shadow: 0 0 16px rgba(245,197,24,0.15);
   }
 
   .hero-sub {
@@ -572,9 +572,9 @@
 
   .oferta-card:hover {
     background: var(--oferta-card-bg-hover);
-    border-color: var(--red);
+    border-color: rgba(232,32,10,0.5);
     transform: translateY(-4px);
-    box-shadow: 0 14px 40px rgba(232,32,10,0.22), var(--oferta-card-shadow-hover), inset 0 1px 0 rgba(var(--tint-rgb),0.06);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.35), var(--oferta-card-shadow-hover), inset 0 1px 0 rgba(var(--tint-rgb),0.06);
   }
   .oferta-card::after {
     content: '';
@@ -848,12 +848,12 @@
     0%, 100% {
       box-shadow: 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(var(--tint-rgb),0.04),
                   0 0 0px rgba(232,32,10,0), 0 0 0px rgba(232,32,10,0);
-      border-color: rgba(232,32,10,0.2);
+      border-color: rgba(232,32,10,0.15);
     }
     50% {
       box-shadow: 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(var(--tint-rgb),0.04),
-                  0 0 10px rgba(232,32,10,0.4), 0 0 24px rgba(232,32,10,0.18);
-      border-color: rgba(232,32,10,0.75);
+                  0 0 3px rgba(232,32,10,0.15), 0 0 7px rgba(232,32,10,0.06);
+      border-color: rgba(232,32,10,0.35);
     }
   }
 
@@ -885,9 +885,9 @@
   }
   .product-card:hover {
     background: var(--gray2);
-    border-color: rgba(232,32,10,0.85);
+    border-color: rgba(232,32,10,0.5);
     transform: translateY(-4px);
-    box-shadow: 0 12px 36px rgba(232,32,10,0.25), 0 0 18px rgba(232,32,10,0.3), 0 2px 8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(var(--tint-rgb),0.06);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.4), 0 0 0 1px rgba(232,32,10,0.2), inset 0 1px 0 rgba(var(--tint-rgb),0.06);
     animation-play-state: paused;
   }
   .product-card:hover::before { opacity: 1; }
