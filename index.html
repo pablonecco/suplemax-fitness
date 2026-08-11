@@ -2482,7 +2482,10 @@
 <script>
 const WA_NUMBER = '5491164445921';
 //const API_URL = 'https://api.sheetbest.com/sheets/5fe69c5d-1965-40d4-b3a6-0a36e19959da';
-const API_URL = 'https://script.google.com/macros/s/AKfycbxgLDwk0f0tJfEPRrHY7uDaZ36J2hBBaHWKLDWc_ln_YpR1i4yfAOdRgNzpK5WEEEDy5A/exec';
+//const API_URL = 'https://script.google.com/macros/s/AKfycbxgLDwk0f0tJfEPRrHY7uDaZ36J2hBBaHWKLDWc_ln_YpR1i4yfAOdRgNzpK5WEEEDy5A/exec';
+const SHEET_ID = '1k1YMhi1QLelcuNfYw5zbXOJSRWDwm19TY6ipdIuwnZs';
+const SHEET_TAB = 'Stock';
+const API_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(SHEET_TAB) + '&headers=1';
 
 let allProducts = [];
 let cart = {};
@@ -3248,13 +3251,36 @@ function ofertaNav(dir) {
   window._ofertaGoSlide(currentSlide + dir);
 }
 
+function parseGvizResponse(text) {
+  var match = text.match(/setResponse\(([\s\S]*)\);?\s*$/);
+  if (!match) throw new Error('No se pudo leer la respuesta de Google Sheets');
+  var json = JSON.parse(match[1]);
+  var cols = json.table.cols.map(function(c) { return c.label; });
+  var rows = json.table.rows || [];
+  return rows.map(function(row) {
+    var obj = {};
+    (row.c || []).forEach(function(cell, i) {
+      var key = cols[i];
+      if (!key) return;
+      var value = '';
+      if (cell) {
+        if (cell.f !== undefined && cell.f !== null) value = cell.f;
+        else if (cell.v !== undefined && cell.v !== null) value = cell.v;
+      }
+      obj[key] = value;
+    });
+    return obj;
+  });
+}
+
 function loadProducts() {
   fetch(API_URL)
     .then(function(r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
+      return r.text();
     })
-    .then(function(data) {
+    .then(function(text) {
+      var data = parseGvizResponse(text);
       var todos = data.filter(function(item) {
         return item['PRODUCTO'] && item['PRODUCTO'].trim();
       });
