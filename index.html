@@ -1916,6 +1916,157 @@
     }
   }
 
+  /* ===== CHECKOUT MODAL ===== */
+  .checkout-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 10002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+  }
+  .checkout-modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .checkout-modal {
+    background: var(--surface-3);
+    border: 1px solid rgba(232,32,10,0.3);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 460px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    z-index: 10003;
+    padding: 2rem;
+    transform: translateY(20px);
+    transition: transform 0.25s;
+  }
+  .checkout-modal-overlay.open .checkout-modal {
+    transform: translateY(0);
+  }
+  .checkout-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(var(--tint-rgb),0.07);
+    border: none;
+    color: var(--muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+    z-index: 10;
+  }
+  .checkout-modal-close:hover { background: rgba(var(--tint-rgb),0.14); color: var(--white); }
+  .checkout-modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--white);
+    letter-spacing: 0.02em;
+    margin-bottom: 1.25rem;
+    padding-right: 2rem;
+  }
+  .checkout-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .checkout-field label {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .checkout-field input[type="text"],
+  .checkout-field select {
+    background: rgba(var(--tint-rgb),0.05);
+    border: 1px solid rgba(var(--tint-rgb),0.15);
+    color: var(--white);
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23f5f3ee'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+  }
+  .checkout-field input[type="text"] { background-image: none; }
+  [data-theme="light"] .checkout-field select {
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231a1410'/%3E%3C/svg%3E");
+  }
+  .checkout-field input[type="text"]:focus,
+  .checkout-field select:focus { border-color: var(--accent-text); }
+  .checkout-field select option {
+    background: var(--surface-select);
+    color: var(--text);
+  }
+  .checkout-radio-group {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .checkout-radio-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(var(--tint-rgb),0.05);
+    border: 1px solid rgba(var(--tint-rgb),0.15);
+    color: var(--white);
+    padding: 0.7rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .checkout-radio-option input { accent-color: var(--accent-text); cursor: pointer; }
+  .checkout-radio-option.active {
+    border-color: var(--accent-text);
+    color: var(--accent-text);
+  }
+  .checkout-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-top: 1px solid rgba(var(--tint-rgb),0.08);
+    padding-top: 1rem;
+    margin: 0.5rem 0 1.25rem;
+  }
+  .checkout-total-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .checkout-total-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.7rem;
+    color: var(--accent-text);
+    letter-spacing: 0.04em;
+  }
+  @media (max-width: 600px) {
+    .checkout-modal {
+      padding: 1.5rem;
+      border-radius: 12px;
+    }
+  }
+
   /* ===== HAMBURGER MENU ===== */
   .hamburger-btn {
     display: none;
@@ -2624,7 +2775,7 @@
       <span class="cart-total-val" id="cart-total">$0</span>
     </div>
     <p class="cart-total-note">* Precio en efectivo. Confirmar con vendedor.</p>
-    <button class="btn-wa-cart" onclick="sendCartToWA()">
+    <button class="btn-wa-cart" onclick="openCheckoutModal()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       Pedir todo por WhatsApp
     </button>
@@ -2857,30 +3008,105 @@ function toggleCart() {
   overlay.classList.toggle('open');
 }
 
-function sendCartToWA() {
+// Devuelve el precio del item según el método de pago, con fallback al otro precio si falta.
+function getPriceForPago(item, pago) {
+  var efectivo = (item['EFECTIVO'] || '').trim();
+  var precioLista = (item['PRECIO LISTA'] || '').trim();
+  if (pago === 'transferencia') return precioLista || efectivo;
+  return efectivo || precioLista;
+}
+
+function getCartTotalForPago(pago) {
+  return Object.keys(cart).reduce(function(sum, k) {
+    var entry = cart[k];
+    return sum + toNum(getPriceForPago(entry.item, pago)) * entry.qty;
+  }, 0);
+}
+
+function openCheckoutModal() {
   var keys = Object.keys(cart);
   if (!keys.length) return;
-  var lines = ['Hola! Quiero hacer el siguiente pedido:\n'];
+  toggleCart();
+  document.getElementById('checkout-form').reset();
+  document.getElementById('checkout-direccion-field').style.display = 'none';
+  document.getElementById('checkout-direccion').required = false;
+  document.querySelectorAll('#checkout-entrega-group .checkout-radio-option, #checkout-pago-group .checkout-radio-option').forEach(function(el, i) {
+    el.classList.toggle('active', i % 2 === 0);
+  });
+  updateCheckoutTotal();
+  document.getElementById('checkout-modal-overlay').classList.add('open');
+}
+
+function closeCheckoutModalDirect() {
+  document.getElementById('checkout-modal-overlay').classList.remove('open');
+}
+
+function closeCheckoutModal(e) {
+  if (e.target === document.getElementById('checkout-modal-overlay')) closeCheckoutModalDirect();
+}
+
+function onCheckoutEntregaChange() {
+  var envio = document.querySelector('input[name="checkout-entrega"]:checked').value === 'envio';
+  document.getElementById('checkout-direccion-field').style.display = envio ? '' : 'none';
+  document.getElementById('checkout-direccion').required = envio;
+  document.querySelectorAll('#checkout-entrega-group .checkout-radio-option').forEach(function(el) {
+    el.classList.toggle('active', el.querySelector('input').checked);
+  });
+}
+
+function onCheckoutPagoChange() {
+  document.querySelectorAll('#checkout-pago-group .checkout-radio-option').forEach(function(el) {
+    el.classList.toggle('active', el.querySelector('input').checked);
+  });
+  updateCheckoutTotal();
+}
+
+function updateCheckoutTotal() {
+  var pago = document.querySelector('input[name="checkout-pago"]:checked').value;
+  var total = getCartTotalForPago(pago);
+  document.getElementById('checkout-total-val').textContent = total ? '$ ' + Math.round(total).toLocaleString('es-AR') : 'A consultar';
+}
+
+function handleCheckoutSubmit(e) {
+  e.preventDefault();
+  var keys = Object.keys(cart);
+  if (!keys.length) return;
+
+  var nombre = document.getElementById('checkout-nombre').value.trim();
+  var apellido = document.getElementById('checkout-apellido').value.trim();
+  var entrega = document.querySelector('input[name="checkout-entrega"]:checked').value;
+  var direccion = document.getElementById('checkout-direccion').value.trim();
+  var pago = document.querySelector('input[name="checkout-pago"]:checked').value;
+
+  if (entrega === 'envio' && !direccion) {
+    document.getElementById('checkout-direccion').focus();
+    return;
+  }
+
+  var lines = ['Hola! Soy ' + nombre + ' ' + apellido + ', quiero hacer el siguiente pedido:\n'];
   var totalPrice = 0;
   keys.forEach(function(k) {
     var entry = cart[k];
     var marca = (entry.item['MARCA'] || '').trim();
-    var nombre = (entry.item['PRODUCTO'] || '').trim();
-    var precio = (entry.item['PRECIO LISTA'] || entry.item['EFECTIVO'] || '').trim();
+    var nombreProd = (entry.item['PRODUCTO'] || '').trim();
+    var precio = (getPriceForPago(entry.item, pago) || '').trim();
     var sabores = getSabores(entry.item);
     var sabStr = sabores.length ? ' (' + sabores[0] + ')' : '';
-    var line = '• *' + marca + ' ' + nombre + '*' + sabStr;
+    var line = '• *' + marca + ' ' + nombreProd + '*' + sabStr;
     if (entry.qty > 1) line += ' x' + entry.qty;
     if (precio) line += ' — ' + precio;
     lines.push(line);
     totalPrice += toNum(precio) * entry.qty;
   });
   if (totalPrice > 0) {
-    lines.push('\n*Total estimado: $' + Math.round(totalPrice).toLocaleString('es-AR') + '*');
+    lines.push('\n*Total ' + (pago === 'transferencia' ? 'por transferencia' : 'en efectivo') + ': $' + Math.round(totalPrice).toLocaleString('es-AR') + '*');
   }
+  lines.push('\n*Entrega:* ' + (entrega === 'envio' ? 'Envío a ' + direccion : 'Retiro en local'));
+  lines.push('*Pago:* ' + (pago === 'transferencia' ? 'Transferencia' : 'Efectivo'));
   lines.push('\n¿Tienen stock?');
   var msg = lines.join('\n');
   window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
+  closeCheckoutModalDirect();
 }
 
 // Cuando la última fila queda incompleta (ej: 3 columnas en tablet y sobran 2),
@@ -3954,6 +4180,57 @@ window.addEventListener('scroll', function() {
 </script>
 
 <!-- PRODUCT MODAL -->
+<div class="checkout-modal-overlay" id="checkout-modal-overlay" onclick="closeCheckoutModal(event)">
+  <div class="checkout-modal" id="checkout-modal">
+    <button class="checkout-modal-close" onclick="closeCheckoutModalDirect()">&times;</button>
+    <div class="checkout-modal-title">Finalizar pedido</div>
+    <form id="checkout-form" onsubmit="handleCheckoutSubmit(event)">
+      <div class="checkout-field">
+        <label for="checkout-nombre">Nombre</label>
+        <input type="text" id="checkout-nombre" required autocomplete="given-name">
+      </div>
+      <div class="checkout-field">
+        <label for="checkout-apellido">Apellido</label>
+        <input type="text" id="checkout-apellido" required autocomplete="family-name">
+      </div>
+      <div class="checkout-field">
+        <label>Entrega</label>
+        <div class="checkout-radio-group" id="checkout-entrega-group">
+          <label class="checkout-radio-option active">
+            <input type="radio" name="checkout-entrega" value="retiro" checked onchange="onCheckoutEntregaChange()"> Retiro
+          </label>
+          <label class="checkout-radio-option">
+            <input type="radio" name="checkout-entrega" value="envio" onchange="onCheckoutEntregaChange()"> Envío
+          </label>
+        </div>
+      </div>
+      <div class="checkout-field" id="checkout-direccion-field" style="display:none;">
+        <label for="checkout-direccion">Dirección de envío</label>
+        <input type="text" id="checkout-direccion" autocomplete="street-address">
+      </div>
+      <div class="checkout-field">
+        <label>Método de pago</label>
+        <div class="checkout-radio-group" id="checkout-pago-group">
+          <label class="checkout-radio-option active">
+            <input type="radio" name="checkout-pago" value="efectivo" checked onchange="onCheckoutPagoChange()"> 💵 Efectivo
+          </label>
+          <label class="checkout-radio-option">
+            <input type="radio" name="checkout-pago" value="transferencia" onchange="onCheckoutPagoChange()"> 🏦 Transferencia
+          </label>
+        </div>
+      </div>
+      <div class="checkout-total-row">
+        <span class="checkout-total-label">Total</span>
+        <span class="checkout-total-val" id="checkout-total-val">$0</span>
+      </div>
+      <button type="submit" class="btn-wa-cart">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Confirmar y enviar por WhatsApp
+      </button>
+    </form>
+  </div>
+</div>
+
 <div class="product-modal-overlay" id="product-modal-overlay" onclick="closeProductModal(event)">
   <div class="product-modal" id="product-modal">
     <button class="product-modal-close" onclick="closeProductModalDirect()">&times;</button>
